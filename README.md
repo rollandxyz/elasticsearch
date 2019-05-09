@@ -10,3 +10,13 @@ https://miroslavpopovic.com/posts/2018/07/elasticsearch-with-aspnet-core-and-doc
 
 https://github.com/elastic/elasticsearch-net
 
+// flatMap is how we handle dependencies between observables
+  getFlatMap(): Observable<Candidate[]> {
+    const observableOne$ = this.getSuggestionsWithoutLocation('coffee');
+    return observableOne$.pipe(
+      flatMap((suggestions: Suggestion[]) => {
+        suggestions.filter(s => s.isCollection);
+        return this.findAddressCandidates(suggestions[0].text, suggestions[0].magicKey);
+      })
+    );
+  }
